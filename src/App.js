@@ -1,23 +1,35 @@
-import logo from './logo.svg';
+import React, { useState } from "react";
 import './App.css';
 
+import SignUp from './Components/SignUp';
+import Home from './Components/Home';
+
+import firebaseApp from "./Config/FirebaseApp";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+const auth = getAuth(firebaseApp);
+
+
+
+
 function App() {
+  const [userGlobal, setUserGlobal] = useState(null);
+
+  onAuthStateChanged(auth, (userFirebase) => {
+    if(userFirebase){
+      setUserGlobal(userFirebase)
+    } else {
+      setUserGlobal(null);
+    }
+  })
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="App-header">
+      <div className="app-Title"> 
+        <h1>Polly</h1>
+      </div>  
+      <>
+      {userGlobal ? <Home/> : <SignUp/>}
+      </>
     </div>
   );
 }
