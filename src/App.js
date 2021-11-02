@@ -28,7 +28,7 @@ function App() {
         <h1>Polly</h1>
       </div>  
       <>
-      {userGlobal ? <Home/> : <SignUp/>}
+      {userGlobal ? <Home userEmail={userGlobal.email} /> : <SignUp/>}
       </>
     </div>
   );
