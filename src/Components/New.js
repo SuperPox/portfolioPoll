@@ -1,6 +1,8 @@
 import React, {useState, useEffect} from 'react'
 import "../CSS/Form.css";
 
+import SimpleNew from './SimpleNew';
+
 import firebaseApp from '../Config/FirebaseApp';
 import { getFirestore, updateDoc, doc } from '@firebase/firestore';
 const firestore = getFirestore(firebaseApp);
@@ -15,11 +17,13 @@ const New = ({userEmail, setPollsArray, pollsArray}) => {
         const Q1A3 = e.target.Q1A3.value;
         const Q1A4 = e.target.Q1A4.value;
         const Q1A5 = e.target.Q1A5.value;
+        const test = {t: "t", q1: "q", pa1: "a", pa1: ""}
 
         const newPollsArray = [ 
             ...pollsArray, 
             {
                 id: +new Date(),
+                test: test,
                 title: title,
                 Q1: Q1,
                 Q1A1: Q1A1,
@@ -80,6 +84,10 @@ const New = ({userEmail, setPollsArray, pollsArray}) => {
     return (
         <div>
             <h4>Create a New Poll</h4>
+            <SimpleNew/>
+
+
+            <br/>
             <form onSubmit={createPoll}>
                 <input type="text" placeholder="new poll title" id="formTitle"></input>
                 <br/><br/>
