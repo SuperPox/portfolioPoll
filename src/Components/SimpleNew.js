@@ -1,20 +1,24 @@
 import React, {useState, useEffect} from 'react'
+import { v4 as uuidv4 } from 'uuid';
 
 const SimpleNew = () => {
-
-    const [title, setTitle] = useState()
-    useEffect(()=>{update()},[title])
     
-    const [answerArr, setAnswerArr] = useState([ 0, 1, 2 ])
+    const [question, setquestion] = useState("q")
+    useEffect(()=>{update()},[question])
+    
+    const [answerArr, setAnswerArr] = useState([ ])
     useEffect(()=>{update()}, [answerArr])
 
-    const [final, setFinal] = useState()
+    const [final, setFinal] = useState({id: uuidv4()})
+    useEffect(()=>{deliverable()}, [final])
 
 
-    const changeTitle = (e) => {
-        setTitle(e.target.value)
+    /////////////////////////////////////////////////////////
+    
+
+    const changequestion = (e) => {
+        setquestion(e.target.value)
     }
-
 
     const change = (index, e) => {      
         var newArr = [...answerArr]
@@ -23,7 +27,8 @@ const SimpleNew = () => {
     }
 
     const add = () => {
-        setAnswerArr([...answerArr, "_"])
+        setAnswerArr([...answerArr, "x"])
+        //console.log("ADD")
     }
 
     const remove = (index) => {
@@ -34,10 +39,31 @@ const SimpleNew = () => {
     }
 
     const update = () => {
-        var updatedTitle = title
-        var updatedArr = [...answerArr]
-        updatedArr.unshift(updatedTitle)
-        setFinal(updatedArr)
+        var sameId = final.id
+        var updatedObject = {}
+        updatedObject.q = question
+        updatedObject.id = sameId
+        
+        var updatedArr = answerArr
+        var tempSource = {}
+        for (let i = 0; i < updatedArr.length; i++){
+            var qkey = "a" + i.toString()
+            tempSource[qkey] = updatedArr[i] 
+        }
+        Object.assign(updatedObject, tempSource)
+
+        var tempSource2 = {}
+        for (let e = 0; e < updatedArr.length; e++){
+            var qrkey = "ar" + e.toString()
+            tempSource2[qrkey] = 0
+        }
+        Object.assign(updatedObject, tempSource2)
+        
+        setFinal(updatedObject)
+    }
+
+    const deliverable = () => {
+        console.log("Deliverable: ", final)
     }
 
 
@@ -48,7 +74,7 @@ const SimpleNew = () => {
             <form>
             <input
                 placeholder="new Question"
-                onChange={e =>changeTitle(e)}
+                onChange={e =>changequestion(e)}
             />
             {answerArr.map( (aArr, index) => 
                 <div key={index}>
@@ -62,9 +88,7 @@ const SimpleNew = () => {
             </form>
             <button onClick={()=>add()}>+</button>
             <br/>
-            ------- <br/>
-            Final: {final} <br/>
-            -------
+            ----------
         </div>
     )
 }
