@@ -2,34 +2,54 @@ import React, {useState, useEffect} from 'react'
 
 const SimpleNew = () => {
 
-    const [ answerArr, setAnswerArr ] = useState([ 1, 2, 3 ])
-    useEffect(() => { AnswerArrChanged()}, [answerArr])
+    const [title, setTitle] = useState()
+    useEffect(()=>{update()},[title])
+    
+    const [answerArr, setAnswerArr] = useState([ 0, 1, 2 ])
+    useEffect(()=>{update()}, [answerArr])
 
-    function AnswerArrChanged() {
-        //console.log("change")
+    const [final, setFinal] = useState()
+
+
+    const changeTitle = (e) => {
+        setTitle(e.target.value)
     }
 
 
-    const change = (index, e) => {
-        var newArr = answerArr
+    const change = (index, e) => {      
+        var newArr = [...answerArr]
         newArr[index] = e.target.value
         setAnswerArr(newArr)
     }
 
     const add = () => {
-        setAnswerArr([...answerArr, "x"])
+        setAnswerArr([...answerArr, "_"])
     }
 
     const remove = (index) => {
         var newArr = [...answerArr]
+        //newArr.splice(newArr.findIndex(value => value.index === index), 1);
         newArr.splice(index, 1)
         setAnswerArr(newArr)
     }
+
+    const update = () => {
+        var updatedTitle = title
+        var updatedArr = [...answerArr]
+        updatedArr.unshift(updatedTitle)
+        setFinal(updatedArr)
+    }
+
+
 
     return (
         <div>
             simple
             <form>
+            <input
+                placeholder="new Question"
+                onChange={e =>changeTitle(e)}
+            />
             {answerArr.map( (aArr, index) => 
                 <div key={index}>
                     <input
@@ -42,8 +62,8 @@ const SimpleNew = () => {
             </form>
             <button onClick={()=>add()}>+</button>
             <br/>
-            {answerArr}
-            <br/>
+            ------- <br/>
+            Final: {final} <br/>
             -------
         </div>
     )
