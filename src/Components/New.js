@@ -5,6 +5,7 @@ import SimpleNew from './SimpleNew';
 
 import firebaseApp from '../Config/FirebaseApp';
 import { getFirestore, updateDoc, doc } from '@firebase/firestore';
+import { set } from 'react-hook-form';
 const firestore = getFirestore(firebaseApp);
 
 const New = ({userEmail, setPollsArray, pollsArray}) => {     
@@ -39,6 +40,82 @@ const New = ({userEmail, setPollsArray, pollsArray}) => {
         setPollsArray(newPollsArray);
         e.target.formTitle.value = ""
     }
+    ////////////////////
+    const [applicant, setApplicant] = useState()
+    useEffect(()=>{check()}, [applicant])
+
+    const [master, setMaster] = useState([])
+    useEffect(()=>{finalData()}, [master])
+
+    //
+
+    const check = () => {
+        //console.log("Applicant: ", applicant)
+        if (applicant != undefined){
+            if (applicant.id != undefined){
+                if (master.length == 0){
+                    console.log("master is empty")
+                    var newArr = []
+                    newArr.push(applicant)
+                    setMaster(newArr)
+                }
+                else {
+                    console.log("master is holding",master[0])
+                    var oldArr = master
+                    for (let i = 0; i < oldArr.length; i++){
+                        if (oldArr[i].id == applicant.id){
+                            console.log("updating held question", applicant)
+                            oldArr[i] = applicant
+                        }
+                        else {
+                            console.log("adding totally new question", applicant)
+                            oldArr.push(applicant)
+                        }
+                    }
+                    setMaster(oldArr)
+
+                }
+            }
+           
+        }
+
+        /*
+        if (master == undefined || master.length == 0){
+            console.log("empty")
+            var newArr = []
+            newArr.push(applicant)
+            console.log("starting: ", newArr)
+            setMaster(newArr) 
+        }
+        else if (master.length != 0){
+            console.log("not empty")
+            var newArr2 = [...master]
+            for (let i = 0; i < newArr2.length; i++){
+                if (newArr2[i].id == qID){
+                    newArr2[i] = applicant
+                }
+                else {
+                    newArr2.push(applicant)
+                    console.log("pushing")
+                }
+            }
+            console.log("what will be pushed: ", newArr2)
+        }
+
+        setMaster(newArr2)
+        */
+
+    }
+
+    const finalData = () => {
+        console.log("Master: ", master)
+    }
+
+
+
+
+
+
     /////////////////
     // Q1
     const [DQ1A1, setDQ1A1] = useState(true)
@@ -84,7 +161,8 @@ const New = ({userEmail, setPollsArray, pollsArray}) => {
     return (
         <div>
             <h4>Create a New Poll</h4>
-            <SimpleNew/>
+            <SimpleNew setApplicant={setApplicant}/>
+            <SimpleNew setApplicant={setApplicant}/>
 
 
             <br/>
