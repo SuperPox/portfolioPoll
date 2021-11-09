@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useMemo} from 'react'
+import React, {useState, useEffect} from 'react'
 import { v4 as uuidv4 } from 'uuid';
 
 
@@ -15,6 +15,8 @@ const SimpleNew = ({setApplicant}) => {
     useEffect(()=>{deliverable()}, [final])
 
     const [qID, setQID] = useState(uuidv4()) 
+
+    const [toggle, setToggle] = useState("x")
 
     
     /////////////////////////////////////////////////////////
@@ -37,6 +39,7 @@ const SimpleNew = ({setApplicant}) => {
 
     const remove = (index) => {
         var newArr = [...answerArr]
+        console.log("pa index: ", index)
         //newArr.splice(newArr.findIndex(value => value.index === index), 1);
         newArr.splice(index, 1)
         setAnswerArr(newArr)
@@ -48,7 +51,7 @@ const SimpleNew = ({setApplicant}) => {
 
         updatedObject.id = qID
         
-        var updatedArr = answerArr
+        var updatedArr = answerArr  //if I add ids I need to watch for that here
         var tempSource = {}
         for (let i = 0; i < updatedArr.length; i++){
             var qkey = "a" + i.toString()
@@ -72,13 +75,14 @@ const SimpleNew = ({setApplicant}) => {
     }
 
 
-
     return (
         <div>
-            simple
+            <br/>
+            <br/>
             <form>
             <input
                 placeholder="new Question"
+                value={final.q}
                 onChange={e =>changequestion(e)}
             />
             {answerArr.map( (aArr, index) => 
@@ -93,7 +97,7 @@ const SimpleNew = ({setApplicant}) => {
             </form>
             <button onClick={()=>add()}>+</button>
             <br/>
-            ----------
+            <br/>
         </div>
     )
 }

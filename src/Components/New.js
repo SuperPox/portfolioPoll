@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from 'react'
 import "../CSS/Form.css";
+import { v4 as uuidv4 } from 'uuid';
 
 import SimpleNew from './SimpleNew';
 
@@ -41,30 +42,53 @@ const New = ({userEmail, setPollsArray, pollsArray}) => {
     }
     ////////////////////
 
-    const [questionArray, setQuestionArray] = useState([ ])
-    useEffect(() => {}, [questionArray])
+    const [componentArray, setcomponentArray] = useState([ {id: uuidv4()}])
+    useEffect(() => {updatecomponentArray()}, [componentArray])
 
     const addQuestion = () => {
-        setQuestionArray([...questionArray])
+        setcomponentArray([...componentArray, {id: uuidv4()}])
     }
 
-    const removeQuestion = (index) => {
-        var newQArr = [...questionArray]
-        newQArr.splice(index, 1)
-        setQuestionArray(newQArr)
+    const updatecomponentArray = () => {
+        console.log("cArr = ", componentArray)
     }
 
-    const updateQuestion = () => {
-        
+    const updateCID = () => {
+        var qIndexToGet = master.length - 1
+        var qIdToGet = master[qIndexToGet].id
+        var newArr = componentArray
+        var cIndexToGet = newArr.length - 1
+        newArr[cIndexToGet].id = qIdToGet
+        setcomponentArray(newArr)   
     }
+
+    const removeC = id => {
+        const newCArr = [...componentArray]
+        newCArr.splice(newCArr.findIndex(q => q.id === id), 1)
+        setcomponentArray(newCArr)
+        removeCfromMaster(id)
+    }
+
+    const removeCfromMaster = (id) => {
+        //console.log("C to remove: ", id)
+        var newMaster = [...master]
+        var index = newMaster.findIndex(e => e.id === id)
+        newMaster.splice(index, 1)
+        //console.log("newMaster after removal", newMaster)
+        setMaster(newMaster)
+    }
+
+
+
+    
+
+    //////////////////
 
     const [applicant, setApplicant] = useState()
     useEffect(()=>{check()}, [applicant])
 
     const [master, setMaster] = useState([])
-    useEffect(()=>{}, [master])
-
-    //
+    useEffect(()=>{masterLog()}, [master])
 
     const check = () => {
         if (applicant !== undefined){
@@ -80,10 +104,17 @@ const New = ({userEmail, setPollsArray, pollsArray}) => {
                 }
                 //console.log("newArr: ", newArr);
                 setMaster(newArr);
-                console.log("master: ", master);
+                //console.log("masterAfterCheck: ", master);
+                updateCID()
             }                
         }
     }
+
+    const masterLog = () => {
+        console.log("masterLog: ",master)
+    }
+
+    
 
     /////////////////
     // Q1
@@ -130,18 +161,19 @@ const New = ({userEmail, setPollsArray, pollsArray}) => {
     return (
         <div>
             <h4>Create a New Poll</h4>
-            <SimpleNew setApplicant={setApplicant}/>
-            {questionArray.map((qArr, index) =>
+            {componentArray.map((qArr, index) =>
                 <div key={index}>
-                    <SimpleNew setApplicant={setApplicant}/>
-                    <button onClick={()=>removeQuestion(index)}>Remove Question</button>
+                    <SimpleNew setApplicant={setApplicant} />
+                    <button onClick={()=>removeC(qArr.id)}>^Remove Question^</button>
                 </div>
             )}
+            <br/>
             <button onClick={()=>addQuestion()}>Add New Question</button>
 
 
-
-
+            <br/>
+            <br/>
+            ------------------------------------------
 
             <br/>
             <br/>
