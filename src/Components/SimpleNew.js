@@ -1,5 +1,7 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState, useEffect, useMemo} from 'react'
 import { v4 as uuidv4 } from 'uuid';
+
+
 
 const SimpleNew = ({setApplicant}) => {
     
@@ -12,9 +14,9 @@ const SimpleNew = ({setApplicant}) => {
     const [final, setFinal] = useState({ })
     useEffect(()=>{deliverable()}, [final])
 
-    //const [qID] = useState({id: uuidv4()})
-    const qID = uuidv4()
+    const [qID, setQID] = useState(uuidv4()) 
 
+    
     /////////////////////////////////////////////////////////
     
 
@@ -41,11 +43,10 @@ const SimpleNew = ({setApplicant}) => {
     }
 
     const update = () => {
-        //var sameId = qID.id
-        var sameId = qID
         var updatedObject = {}
         updatedObject.q = question
-        updatedObject.id = sameId
+
+        updatedObject.id = qID
         
         var updatedArr = answerArr
         var tempSource = {}
@@ -62,7 +63,7 @@ const SimpleNew = ({setApplicant}) => {
         }
         Object.assign(updatedObject, tempSource2)
         
-        setFinal(updatedObject)
+        setFinal(updatedObject)    
     }
 
     const deliverable = () => {

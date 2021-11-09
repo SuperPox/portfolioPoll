@@ -5,7 +5,6 @@ import SimpleNew from './SimpleNew';
 
 import firebaseApp from '../Config/FirebaseApp';
 import { getFirestore, updateDoc, doc } from '@firebase/firestore';
-import { set } from 'react-hook-form';
 const firestore = getFirestore(firebaseApp);
 
 const New = ({userEmail, setPollsArray, pollsArray}) => {     
@@ -41,80 +40,50 @@ const New = ({userEmail, setPollsArray, pollsArray}) => {
         e.target.formTitle.value = ""
     }
     ////////////////////
+
+    const [questionArray, setQuestionArray] = useState([ ])
+    useEffect(() => {}, [questionArray])
+
+    const addQuestion = () => {
+        setQuestionArray([...questionArray])
+    }
+
+    const removeQuestion = (index) => {
+        var newQArr = [...questionArray]
+        newQArr.splice(index, 1)
+        setQuestionArray(newQArr)
+    }
+
+    const updateQuestion = () => {
+        
+    }
+
     const [applicant, setApplicant] = useState()
     useEffect(()=>{check()}, [applicant])
 
     const [master, setMaster] = useState([])
-    useEffect(()=>{finalData()}, [master])
+    useEffect(()=>{}, [master])
 
     //
 
     const check = () => {
-        //console.log("Applicant: ", applicant)
-        if (applicant != undefined){
-            if (applicant.id != undefined){
-                if (master.length == 0){
-                    console.log("master is empty")
-                    var newArr = []
+        if (applicant !== undefined){
+            if (applicant.id !== undefined){
+                var newArr = master;
+                var match = newArr.find(e => e.id === applicant.id)
+                if (match === undefined){
                     newArr.push(applicant)
-                    setMaster(newArr)
                 }
-                else {
-                    console.log("master is holding",master[0])
-                    var oldArr = master
-                    for (let i = 0; i < oldArr.length; i++){
-                        if (oldArr[i].id == applicant.id){
-                            console.log("updating held question", applicant)
-                            oldArr[i] = applicant
-                        }
-                        else {
-                            console.log("adding totally new question", applicant)
-                            oldArr.push(applicant)
-                        }
-                    }
-                    setMaster(oldArr)
-
+                else { // if we do have a match -replace it in the array
+                    var index = newArr.findIndex(i => i.id === applicant.id);
+                    newArr[index] = applicant;
                 }
-            }
-           
+                //console.log("newArr: ", newArr);
+                setMaster(newArr);
+                console.log("master: ", master);
+            }                
         }
-
-        /*
-        if (master == undefined || master.length == 0){
-            console.log("empty")
-            var newArr = []
-            newArr.push(applicant)
-            console.log("starting: ", newArr)
-            setMaster(newArr) 
-        }
-        else if (master.length != 0){
-            console.log("not empty")
-            var newArr2 = [...master]
-            for (let i = 0; i < newArr2.length; i++){
-                if (newArr2[i].id == qID){
-                    newArr2[i] = applicant
-                }
-                else {
-                    newArr2.push(applicant)
-                    console.log("pushing")
-                }
-            }
-            console.log("what will be pushed: ", newArr2)
-        }
-
-        setMaster(newArr2)
-        */
-
     }
-
-    const finalData = () => {
-        console.log("Master: ", master)
-    }
-
-
-
-
-
 
     /////////////////
     // Q1
@@ -162,9 +131,19 @@ const New = ({userEmail, setPollsArray, pollsArray}) => {
         <div>
             <h4>Create a New Poll</h4>
             <SimpleNew setApplicant={setApplicant}/>
-            <SimpleNew setApplicant={setApplicant}/>
+            {questionArray.map((qArr, index) =>
+                <div key={index}>
+                    <SimpleNew setApplicant={setApplicant}/>
+                    <button onClick={()=>removeQuestion(index)}>Remove Question</button>
+                </div>
+            )}
+            <button onClick={()=>addQuestion()}>Add New Question</button>
 
 
+
+
+
+            <br/>
             <br/>
             <form onSubmit={createPoll}>
                 <input type="text" placeholder="new poll title" id="formTitle"></input>
