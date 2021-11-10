@@ -8,16 +8,13 @@ const SimpleNew = ({setApplicant}) => {
     const [question, setquestion] = useState("q")
     useEffect(()=>{update()},[question])
     
-    const [answerArr, setAnswerArr] = useState([ ])
+    const [answerArr, setAnswerArr] = useState([{ id: uuidv4(), pa: "" }])
     useEffect(()=>{update()}, [answerArr])
 
     const [final, setFinal] = useState({ })
     useEffect(()=>{deliverable()}, [final])
 
     const [qID, setQID] = useState(uuidv4()) 
-
-    const [toggle, setToggle] = useState("x")
-
     
     /////////////////////////////////////////////////////////
     
@@ -26,32 +23,36 @@ const SimpleNew = ({setApplicant}) => {
         setquestion(e.target.value)
     }
 
-    const change = (index, e) => {      
+    const change = (id, e) => {      
         var newArr = [...answerArr]
-        newArr[index] = e.target.value
+        var targetIndex = newArr.findIndex(x => x.id === id)
+        newArr[targetIndex].pa = e.target.value
         setAnswerArr(newArr)
     }
 
     const add = () => {
-        setAnswerArr([...answerArr, "x"])
-        //console.log("ADD")
+        setAnswerArr([...answerArr, { id: uuidv4(), pa: "" }])
     }
 
-    const remove = (index) => {
+    const remove = (id, e) => {
+        e.preventDefault()
         var newArr = [...answerArr]
-        console.log("pa index: ", index)
-        //newArr.splice(newArr.findIndex(value => value.index === index), 1);
-        newArr.splice(index, 1)
+        newArr.splice(newArr.findIndex(value => value.id === id), 1);
         setAnswerArr(newArr)
     }
 
     const update = () => {
         var updatedObject = {}
         updatedObject.q = question
-
         updatedObject.id = qID
+
+        var strippedPaArr = []
+        for (let i = 0; i < answerArr.length; i++){
+            var paToAdd = answerArr[i].pa
+            strippedPaArr.push(paToAdd)
+        }
         
-        var updatedArr = answerArr  //if I add ids I need to watch for that here
+        var updatedArr = strippedPaArr  
         var tempSource = {}
         for (let i = 0; i < updatedArr.length; i++){
             var qkey = "a" + i.toString()
@@ -74,7 +75,6 @@ const SimpleNew = ({setApplicant}) => {
         setApplicant(final)
     }
 
-
     return (
         <div>
             <br/>
@@ -85,14 +85,14 @@ const SimpleNew = ({setApplicant}) => {
                 value={final.q}
                 onChange={e =>changequestion(e)}
             />
-            {answerArr.map( (aArr, index) => 
+            {answerArr.map((answerArr, index) => 
                 <div key={index}>
                     <input
                         placeholder="new possible answer"
-                        onChange={e=>change(index,e)}
-                        key={index}
+                        value={answerArr.pa}
+                        onChange={e=>change(answerArr.id,e)}
                     />
-                    <button onClick={()=>remove(index)}>X</button> 
+                    <button onClick={e=>remove(answerArr.id,e)}>X</button>
                 </div>)}   
             </form>
             <button onClick={()=>add()}>+</button>
